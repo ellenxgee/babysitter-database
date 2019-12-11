@@ -1,0 +1,112 @@
+Ellen Gee
+Assignment 5
+
+//foreign key constraints
+mysql> select *
+    -> from INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+    -> where CONSTRAINT_TYPE = 'FOREIGN KEY';
++--------------------+-------------------+---------------------+--------------+--------------+-----------------+
+| CONSTRAINT_CATALOG | CONSTRAINT_SCHEMA | CONSTRAINT_NAME     | TABLE_SCHEMA | TABLE_NAME   | CONSTRAINT_TYPE |
++--------------------+-------------------+---------------------+--------------+--------------+-----------------+
+| def                | babysitterDB      | parent_ibfk_1       | babysitterDB | parent       | FOREIGN KEY     |
+| def                | babysitterDB      | child_ibfk_1        | babysitterDB | child        | FOREIGN KEY     |
+| def                | babysitterDB      | works_for_ibfk_1    | babysitterDB | works_for    | FOREIGN KEY     |
+| def                | babysitterDB      | works_for_ibfk_2    | babysitterDB | works_for    | FOREIGN KEY     |
+| def                | boatshop          | reservations_ibfk_1 | boatshop     | reservations | FOREIGN KEY     |
+| def                | boatshop          | reservations_ibfk_2 | boatshop     | reservations | FOREIGN KEY     |
++--------------------+-------------------+---------------------+--------------+--------------+-----------------+
+6 rows in set (0.03 sec)
+
+mysql> INSERT INTO works_for VALUES(10000,20,20,5,100);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`babysitterdb`.`works_for`, CONSTRAINT `works_for_ibfk_1` FOREIGN KEY (`bid`) REFERENCES `babysitter` (`bid`))
+
+//procedure or function
+This procedure takes a FID as input, and gives the number of kids with that FID as the output (i.e. the number of kids in a family).
+
+DROP PROCEDURE IF EXISTS numKids;
+DELIMITER //
+CREATE PROCEDURE numKids(IN inFID INT, OUT numKids INT)
+BEGIN
+  SELECT COUNT(*) INTO numKids
+  FROM child c
+  WHERE c.fid = inFID;
+END //
+DELIMITER ;
+CALL numKids(1, @numKids)
+
+//from terminal
+mysql> DROP PROCEDURE IF EXISTS numKids;
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE numKids(IN inFID INT, OUT numKids INT)
+    -> BEGIN
+    -> SELECT COUNT(*) INTO numKids
+    -> FROM child c
+    -> WHERE c.fid = inFID;
+    -> END //
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> DELIMITER ;
+mysql> SET @numKids = 0;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> CALL numKids(1, @numKids);
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT @numKids;
++----------+
+| @numKids |
++----------+
+|        5 |
++----------+
+1 row in set (0.00 sec)
+
+//logging trigger
+Logs when a new child is added to the child table.
+
+CREATE TABLE childLog(name VARCHAR(20), age INT, cid INT, fid INT);
+DROP TRIGGER IF EXISTS newChild;
+DELIMITER //
+CREATE TRIGGER newChild
+AFTER INSERT ON child
+FOR EACH ROW
+BEGIN
+  INSERT INTO childLog
+  VALUES(NEW.name, NEW.age, NEW.cid, NEW.fid);
+END //
+DELIMITER ;
+
+//from terminal
+mysql> CREATE TABLE childLog(name VARCHAR(20), age INT, cid INT, fid INT);
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> DROP TRIGGER IF EXISTS newChild;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> DELIMITER //
+mysql> CREATE TRIGGER newChild
+    -> AFTER INSERT ON child
+    -> FOR EACH ROW
+    -> BEGIN
+    -> INSERT INTO childLog
+    -> VALUES(NEW.name, NEW.age, NEW.cid, NEW.fid);
+    -> END //
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DELIMITER ;
+
+mysql> INSERT INTO child (name, age, hobby, cid, fid) VALUES ('MaryClaire', 12, 'Music', 5002, 9);
+Query OK, 1 row affected (0.01 sec
+
+INSERT INTO child (name, age, hobby, cid, fid) VALUES ('Claire', 0, 'Sleep', 5003, 6);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> select * from childLog;
++------------+------+------+------+
+| name       | age  | cid  | fid  |
++------------+------+------+------+
+| MaryClaire |   12 | 5002 |    9 |
+| Claire     |    0 | 5003 |    6 |
++------------+------+------+------+
+2 rows in set (0.00 sec)

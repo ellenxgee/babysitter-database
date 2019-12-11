@@ -1,0 +1,216 @@
+Ellen Gee
+Assignment 3
+
+Used Mockaroo to generate data.
+Loaded data using 'mysql -u root babysitterDB < babysitter.sql' (or similar depending on the data being entered).
+
+Sample from data files:
+babysitter table:
+insert into babysitter (name, age, phone_number, has_car, bid) values ('Clarance Rickman', 22, '7642808846', false, 6);
+insert into babysitter (name, age, phone_number, has_car, bid) values ('Jorgan Belcham', 70, '4372122073', true, 7);
+insert into babysitter (name, age, phone_number, has_car, bid) values ('Rockey Szymanzyk', 51, '7562488220', true, 8);
+insert into babysitter (name, age, phone_number, has_car, bid) values ('Merle McClure', 39, '1015284199', false, 9);
+insert into babysitter (name, age, phone_number, has_car, bid) values ('Anatole Saltrese', 52, '5617091458', false, 10);
+
+family table:
+insert into family (surname, address, fid) values ('Grishankov', '28 Dixon Pass', 1);
+insert into family (surname, address, fid) values ('Paullin', '3 Duke Drive', 2);
+insert into family (surname, address, fid) values ('Atlee', '386 Johnson Point', 3);
+insert into family (surname, address, fid) values ('Alberts', '658 Darwin Pass', 4);
+insert into family (surname, address, fid) values ('Cribbott', '267 Anzinger Parkway', 5);
+
+parent table:
+insert into parent (name, phone_number, pid, fid) values ('Larine', '1827105087', 1, 1);
+insert into parent (name, phone_number, pid, fid) values ('Morgun', '1937294542', 2, 2);
+insert into parent (name, phone_number, pid, fid) values ('Payton', '7225563179', 3, 3);
+insert into parent (name, phone_number, pid, fid) values ('Curtice', '2858874667', 4, 4);
+insert into parent (name, phone_number, pid, fid) values ('Engelbert', '1168468078', 5, 5);
+
+child table:
+insert into child (name, age, hobby, cid, fid) values ('Ax', 12, 'DSDM', 1, 1);
+insert into child (name, age, hobby, cid, fid) values ('Eugenius', 12, 'AHU', 2, 2);
+insert into child (name, age, hobby, cid, fid) values ('Putnem', 5, 'Pre-opening', 3, 3);
+insert into child (name, age, hobby, cid, fid) values ('Berri', 1, 'Uniform Combined State Law', 4, 4);
+insert into child (name, age, hobby, cid, fid) values ('Maitilde', 0, 'Spring Framework', 5, 5);
+
+works_for table:
+insert into works_for (bid, fid, pay_rate, hours_worked, money_owed) values (1, 1, 31.29, 4665, '1542.54');
+insert into works_for (bid, fid, pay_rate, hours_worked, money_owed) values (2, 2, 11.35, 4469, '1101.94');
+insert into works_for (bid, fid, pay_rate, hours_worked, money_owed) values (3, 3, 10.13, 238, '461.04');
+insert into works_for (bid, fid, pay_rate, hours_worked, money_owed) values (4, 4, 36.45, 1778, '1453.79');
+insert into works_for (bid, fid, pay_rate, hours_worked, money_owed) values (5, 5, 15.67, 3849, '1108.94');
+
+Output from terminal calls:
+mysql> use babysitterDB;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++------------------------+
+| Tables_in_babysitterdb |
++------------------------+
+| babysitter             |
+| child                  |
+| family                 |
+| parent                 |
+| works_for              |
++------------------------+
+5 rows in set (0.01 sec)
+
+mysql> describe babysitter;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| name         | varchar(40) | YES  |     | NULL    |       |
+| age          | int(11)     | YES  |     | NULL    |       |
+| phone_number | bigint(20)  | YES  |     | NULL    |       |
+| has_car      | tinyint(1)  | YES  |     | NULL    |       |
+| bid          | int(11)     | NO   | PRI | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+5 rows in set (0.02 sec)
+
+mysql> describe child;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| name  | varchar(20) | YES  |     | NULL    |       |
+| age   | int(11)     | YES  |     | NULL    |       |
+| hobby | varchar(40) | YES  |     | NULL    |       |
+| cid   | int(11)     | NO   | PRI | NULL    |       |
+| fid   | int(11)     | YES  | MUL | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> describe family;
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| surname | varchar(30)  | YES  |     | NULL    |       |
+| address | varchar(255) | YES  |     | NULL    |       |
+| fid     | int(11)      | NO   | PRI | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> describe parent;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| name         | varchar(20) | YES  |     | NULL    |       |
+| phone_number | bigint(20)  | YES  |     | NULL    |       |
+| pid          | int(11)     | NO   | PRI | NULL    |       |
+| fid          | int(11)     | YES  | MUL | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+4 rows in set (0.01 sec)
+
+mysql> describe works_for;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| bid          | int(11)      | NO   | PRI | NULL    |       |
+| fid          | int(11)      | NO   | PRI | NULL    |       |
+| pay_rate     | decimal(5,2) | YES  |     | NULL    |       |
+| hours_worked | int(11)      | YES  |     | NULL    |       |
+| money_owed   | decimal(7,2) | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+5 rows in set (0.01 sec)
+
+mysql> select count(*) from babysitter;
++----------+
+| count(*) |
++----------+
+|     2000 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> select count(*) from family;
++----------+
+| count(*) |
++----------+
+|     2000 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from parent;
++----------+
+| count(*) |
++----------+
+|     4000 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> select count(*) from child;
++----------+
+| count(*) |
++----------+
+|     5000 |
++----------+
+1 row in set (0.02 sec)
+
+mysql> select count(*) from works_for;
++----------+
+| count(*) |
++----------+
+|    20000 |
++----------+
+1 row in set (0.01 sec)
+
+mysql> select * from babysitter where bid < 6;
++-----------------+------+--------------+---------+-----+
+| name            | age  | phone_number | has_car | bid |
++-----------------+------+--------------+---------+-----+
+| Jane Andrews    |   19 |   1234567890 |       1 |   1 |
+| Tony Smith      |   18 |   3031239852 |       0 |   2 |
+| Annie Jones     |   21 |   2138769890 |       0 |   3 |
+| Melanie Meyers  |   16 |   6517382945 |       1 |   4 |
+| Harley Davidson |   20 |   6123893928 |       1 |   5 |
++-----------------+------+--------------+---------+-----+
+5 rows in set (0.00 sec)
+
+mysql> select * from family where fid < 6;
++------------+----------------------+-----+
+| surname    | address              | fid |
++------------+----------------------+-----+
+| Grishankov | 28 Dixon Pass        |   1 |
+| Paullin    | 3 Duke Drive         |   2 |
+| Atlee      | 386 Johnson Point    |   3 |
+| Alberts    | 658 Darwin Pass      |   4 |
+| Cribbott   | 267 Anzinger Parkway |   5 |
++------------+----------------------+-----+
+5 rows in set (0.00 sec)
+
+mysql> select * from parent where fid < 3;
++--------+--------------+------+------+
+| name   | phone_number | pid  | fid  |
++--------+--------------+------+------+
+| Larine |   1827105087 |    1 |    1 |
+| Burt   |   9532765048 | 1001 |    1 |
+| Morgun |   1937294542 |    2 |    2 |
+| Alan   |   6933148720 | 1002 |    2 |
++--------+--------------+------+------+
+4 rows in set (0.01 sec)
+
+mysql> select * from child where fid < 3;
++----------+------+-----------------+------+------+
+| name     | age  | hobby           | cid  | fid  |
++----------+------+-----------------+------+------+
+| Ax       |   12 | DSDM            |    1 |    1 |
+| Lucita   |    1 | Ultrafiltration | 2512 |    1 |
+| Lucinda  |   11 | FM200           | 3079 |    1 |
+| Rafaello |   11 | RSLogix         | 4826 |    1 |
+| Eugenius |   12 | AHU             |    2 |    2 |
+| Blinni   |   18 | Lytec           | 2477 |    2 |
+| Ferne    |   16 | HBDI            | 2790 |    2 |
++----------+------+-----------------+------+------+
+7 rows in set (0.01 sec)
+
+mysql> select * from works_for where bid = 1;
++-----+-----+----------+--------------+------------+
+| bid | fid | pay_rate | hours_worked | money_owed |
++-----+-----+----------+--------------+------------+
+|   1 |   1 |    31.29 |         4665 |    1542.54 |
+|   1 |   6 |    26.37 |           61 |     936.96 |
+|   1 |  34 |     2.98 |         2698 |     729.75 |
+|   1 | 251 |    31.85 |         1461 |    1408.13 |
++-----+-----+----------+--------------+------------+
+4 rows in set (0.00 sec)

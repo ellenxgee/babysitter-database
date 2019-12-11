@@ -1,0 +1,95 @@
+Ellen Gee
+Assignment 4
+
+Querries
+1. The names of babysitters who work for the family with fid = 1.
+select b.name from babysitter b, works_for w where b.bid=w.bid and w.fid=1;
++--------------------+
+| name               |
++--------------------+
+| Jane Andrews       |
+| Clarance Rickman   |
+| Merle McClure      |
+| Ingaberg Liversage |
+| Constancy Jannaway |
+| Ivan Killingworth  |
+| Hakim Baber        |
+| Aloysius MacAne    |
++--------------------+
+8 rows in set (0.01 sec)
+
+2. How many babysitters have cars and how many babysitters do not have cars.
+select has_car, count(*) from babysitter group by has_car;
++---------+----------+
+| has_car | count(*) |
++---------+----------+
+|       1 |      987 |
+|       0 |     1013 |
++---------+----------+
+
+3. How many babysitters are 18 years old or younger, broken down by age.
+select b.age, count(*) from babysitter b, works_for w where b.bid=w.bid  group by age having age<19;
++------+----------+
+| age  | count(*) |
++------+----------+
+|   18 |      299 |
+|   16 |      339 |
+|   17 |      229 |
+|   15 |      535 |
++------+----------+
+4 rows in set (0.03 sec)
+
+Data Modifications
+Pre-modifications:
+select * from child where fid = 1;
++----------+------+-----------------+------+------+
+| name     | age  | hobby           | cid  | fid  |
++----------+------+-----------------+------+------+
+| Ax       |   12 | DSDM            |    1 |    1 |
+| Lucita   |    1 | Ultrafiltration | 2512 |    1 |
+| Lucinda  |   11 | FM200           | 3079 |    1 |
+| Rafaello |   11 | RSLogix         | 4826 |    1 |
++----------+------+-----------------+------+------+
+4 rows in set (0.06 sec)
+
+1. Simple insert
+insert into child values("Emily",5,"Ballet",5001,1);
+select * from child where fid = 1;
++----------+------+-----------------+------+------+
+| name     | age  | hobby           | cid  | fid  |
++----------+------+-----------------+------+------+
+| Ax       |   12 | DSDM            |    1 |    1 |
+| Lucita   |    1 | Ultrafiltration | 2512 |    1 |
+| Lucinda  |   11 | FM200           | 3079 |    1 |
+| Rafaello |   11 | RSLogix         | 4826 |    1 |
+| Emily    |    5 | Ballet          | 5001 |    1 |
++----------+------+-----------------+------+------+
+5 rows in set (0.00 sec)
+
+2. Simple update
+update child set age = age+1 where cid = 5001;
+select * from child where fid = 1;
++----------+------+-----------------+------+------+
+| name     | age  | hobby           | cid  | fid  |
++----------+------+-----------------+------+------+
+| Ax       |   12 | DSDM            |    1 |    1 |
+| Lucita   |    1 | Ultrafiltration | 2512 |    1 |
+| Lucinda  |   11 | FM200           | 3079 |    1 |
+| Rafaello |   11 | RSLogix         | 4826 |    1 |
+| Emily    |    6 | Ballet          | 5001 |    1 |
++----------+------+-----------------+------+------+
+5 rows in set (0.00 sec)
+
+3. Update several tuples at once
+update child set age = age+1 where fid = 1;
+select * from child where fid = 1;
++----------+------+-----------------+------+------+
+| name     | age  | hobby           | cid  | fid  |
++----------+------+-----------------+------+------+
+| Ax       |   13 | DSDM            |    1 |    1 |
+| Lucita   |    2 | Ultrafiltration | 2512 |    1 |
+| Lucinda  |   12 | FM200           | 3079 |    1 |
+| Rafaello |   12 | RSLogix         | 4826 |    1 |
+| Emily    |    7 | Ballet          | 5001 |    1 |
++----------+------+-----------------+------+------+
+5 rows in set (0.00 sec)
